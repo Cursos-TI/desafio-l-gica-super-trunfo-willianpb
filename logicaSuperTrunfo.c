@@ -6,7 +6,7 @@
 // Siga os comentários para implementar cada parte do desafio.
 // Teste larissa
 
-typedef struct 
+typedef struct
 {
     char nomePais[30];
     char nomeEstado[30];
@@ -19,15 +19,18 @@ typedef struct
     float densidade;
 } Card;
 
-void PreencheCarta(Card * card);
-void PrintCarta(Card * card);
-void VerificaVencedora(Card * card1, Card * card2);
-float CalcularSuperPoder(Card * card);
-void CalcularPonto(int * ponto1, int * ponto2, float valor1, float valor2);
+void PreencheCarta(Card *card);
+void PrintCarta(Card *card);
+void PrintCartaVencedora(Card *card1, Card *card2, int pontos1, int pontos2);
+void VerificaVencedora(Card *card1, Card *card2);
+void CalcularPonto(int *ponto1, int *ponto2, float valor1, float valor2);
+float CalcularSuperPoder(Card *card);
+int Menu();
+int MenuSelecaoAtributos();
 
-void PreencheCarta(Card * card) 
+void PreencheCarta(Card *card)
 {
-     printf("Digite o nome do País: ");
+    printf("Digite o nome do País: ");
     scanf("%s", card->nomePais);
 
     printf("Digite o nome do Estado: ");
@@ -59,16 +62,18 @@ void PreencheCarta(Card * card)
     card->pibPerCapita = 0;
     card->densidade = 0;
 
-    if(card->area > 0) {
+    if (card->area > 0)
+    {
         card->densidade = card->populacao / card->area;
     }
 
-    if(card->populacao > 0){
+    if (card->populacao > 0)
+    {
         card->pibPerCapita = card->pib / card->populacao;
     }
 }
 
-void PrintCarta(Card * card1) 
+void PrintCarta(Card *card1)
 {
     printf("\nPaís: %s", card1->nomePais);
     printf("\nEstado: %s", card1->nomeEstado);
@@ -81,53 +86,53 @@ void PrintCarta(Card * card1)
     printf("\nPIB per Capita: %.2f", card1->pibPerCapita);
 }
 
-float CalcularSuperPoder(Card * card)
+float CalcularSuperPoder(Card *card)
 {
-    return (float)card->area 
-        + card->densidade 
-        + card->pib 
-        + card->pibPerCapita 
-        + card->pontosTuristicos 
-        + card->populacao;
+    return (float)card->area + card->densidade + card->pib + card->pibPerCapita + card->pontosTuristicos + card->populacao;
 }
 
-void CalcularPonto(int * ponto1, int * ponto2, float valor1, float valor2)
+void CalcularPonto(int *ponto1, int *ponto2, float valor1, float valor2)
 {
-    if(valor1 > valor2)
+    if (valor1 > valor2)
     {
         *ponto1 += 1;
     }
-    else if(valor1 < valor2)
+    else if (valor1 < valor2)
     {
-        *ponto2 += 1;       
+        *ponto2 += 1;
     }
 }
 
-void VerificaVencedora(Card * card1, Card * card2)
+void VerificaVencedora(Card *card1, Card *card2)
 {
     int pontosCarta1 = 0;
     int pontosCarta2 = 0;
 
-    if(card1->densidade > card2->densidade)
-    {
-        pontosCarta2++;
-    }
-    else if(card1->densidade < card2->densidade)
-    {
-        pontosCarta1++;       
-    }
-
+    CalcularPonto(&pontosCarta1, &pontosCarta2, (float)card1->populacao, (float)card2->populacao);
+    CalcularPonto(&pontosCarta1, &pontosCarta2, (float)card1->pontosTuristicos, (float)card2->pontosTuristicos);
     CalcularPonto(&pontosCarta1, &pontosCarta2, card1->area, card2->area);
     CalcularPonto(&pontosCarta1, &pontosCarta2, card1->pib, card2->pib);
     CalcularPonto(&pontosCarta1, &pontosCarta2, card1->pibPerCapita, card2->pibPerCapita);
-    CalcularPonto(&pontosCarta1, &pontosCarta2, (float)card1->pontosTuristicos, (float)card2->pontosTuristicos);
-    CalcularPonto(&pontosCarta1, &pontosCarta2, (float)card1->populacao, (float)card2->populacao);
 
-    if(pontosCarta1 > pontosCarta2)
+    if (card1->densidade > card2->densidade)
+    {
+        pontosCarta2++;
+    }
+    else if (card1->densidade < card2->densidade)
+    {
+        pontosCarta1++;
+    }
+
+    PrintCartaVencedora(card1, card2, pontosCarta1, pontosCarta2);
+}
+
+void PrintCartaVencedora(Card *card1, Card *card2, int pontos1, int pontos2)
+{
+    if (pontos1 > pontos2)
     {
         printf("\nA carta vencedora foi: %s\n", card1->nomePais);
     }
-    else if(pontosCarta1 < pontosCarta2)
+    else if (pontos1 < pontos2)
     {
         printf("\nA carta vencedora foi: %s\n", card2->nomePais);
     }
@@ -136,11 +141,50 @@ void VerificaVencedora(Card * card1, Card * card2)
         printf("\nHouve um empate entre as cartas\n");
     }
 
-    printf("\nPONTOS %s: %d \n",card1->nomePais, pontosCarta1);
-    printf("PONTOS %s: %d \n",card2->nomePais, pontosCarta2);
+    printf("\nPONTOS %s: %d \n", card1->nomePais, pontos1);
+    printf("PONTOS %s: %d \n", card2->nomePais, pontos2);
 }
 
-int main() {
+int Menu()
+{
+    int opcaoSelecionada;
+    printf("\nSelecione uma opção: \n");
+    printf("1 - Verificar carta vencedora\n");
+    printf("2 - Selecionar atributos da carta\n");
+    printf("3 - Sair\n");
+
+    scanf("%d", &opcaoSelecionada);
+
+    return opcaoSelecionada;
+}
+
+int MenuSelecaoAtributos()
+{
+    // Valor dos atributos
+    // unsigned int populacao = 1;
+    // unsigned int pontosTuristicos = 2;
+    // float area = 3;
+    // float pib = 4;
+    // float pibPerCapita = 5;
+    // float densidade = 6;
+
+    int atributo;
+    printf("\nSelecione o atributo para calcular: \n");
+    printf("1 - População\n");
+    printf("2 - Pontos Turísticos\n");
+    printf("3 - Área\n");
+    printf("4 - PIB\n");
+    printf("5 - PIB per Capita\n");
+    printf("6 - Densidade\n");
+    printf("0 - Verificar Carta Vencedora\n");
+
+    scanf("%d", &atributo);
+
+    return atributo;
+}
+
+int main()
+{
     // Sugestão: Defina variáveis separadas para cada atributo da cidade.
     // Exemplos de atributos: código da cidade, nome, população, área, PIB, número de pontos turísticos.
     Card card1;
@@ -161,12 +205,75 @@ int main() {
     printf("\n**** Informações da Carta 1 ****");
     PrintCarta(&card1);
     printf("\n****************\n");
-    
+
     printf("\n**** Informações da Carta 2 ****");
     PrintCarta(&card2);
     printf("\n****************\n");
 
-    VerificaVencedora(&card1, &card2);
+    int opcaoSelecionda = Menu();
+
+    switch (opcaoSelecionda)
+    {
+    case 1:
+        VerificaVencedora(&card1, &card2);
+        break;
+
+    case 2:
+        int atributoSelecionado = 0;
+        int pontosCarta1 = 0;
+        int pontosCarta2 = 0;
+
+        do
+        {
+            atributoSelecionado = MenuSelecaoAtributos();
+
+            switch (atributoSelecionado)
+            {
+            case 1:
+                CalcularPonto(&pontosCarta1, &pontosCarta2, (float)card1.populacao, (float)card2.populacao);
+                break;
+
+            case 2:
+
+                CalcularPonto(&pontosCarta1, &pontosCarta2, (float)card1.pontosTuristicos, (float)card2.pontosTuristicos);
+                break;
+
+            case 3:
+                CalcularPonto(&pontosCarta1, &pontosCarta2, card1.area, card2.area);
+                break;
+
+            case 4:
+                CalcularPonto(&pontosCarta1, &pontosCarta2, card1.pib, card2.pib);
+                break;
+
+            case 5:
+                CalcularPonto(&pontosCarta1, &pontosCarta2, card1.pibPerCapita, card2.pibPerCapita);
+                break;
+
+            case 6:
+
+                if (card1.densidade > card2.densidade)
+                {
+                    pontosCarta2++;
+                }
+                else if (card1.densidade < card2.densidade)
+                {
+                    pontosCarta1++;
+                }
+                break;
+
+            default:
+                break;
+            }
+
+        } while (atributoSelecionado != 0);
+
+        PrintCartaVencedora(&card1, &card2, pontosCarta1, pontosCarta2);
+        break;
+
+    default:
+        break;
+    }
 
     return 0;
 }
