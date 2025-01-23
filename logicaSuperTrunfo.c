@@ -211,6 +211,9 @@ int main()
     printf("\n****************\n");
 
     int opcaoSelecionda = Menu();
+    int atributoSelecionado = 0;
+    int pontosCarta1 = 0;
+    int pontosCarta2 = 0;
 
     switch (opcaoSelecionda)
     {
@@ -219,9 +222,6 @@ int main()
         break;
 
     case 2:
-        int atributoSelecionado = 0;
-        int pontosCarta1 = 0;
-        int pontosCarta2 = 0;
 
         do
         {
